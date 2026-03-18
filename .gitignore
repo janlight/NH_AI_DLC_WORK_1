@@ -1,3 +1,25 @@
-aidlc-docs/aidlc-state.md
-aidlc-docs/audit.md
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.local
+
+# OS
 .DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Build
+dist/
+build/
+
+# Uploads
+backend/uploads/
+
+# AI-DLC state files (team-shared separately)
+aidlc-docs/audit.md
+aidlc-docs/aidlc-state.md
