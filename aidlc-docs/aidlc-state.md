@@ -22,8 +22,9 @@
 
 ## Execution Plan Summary
 - **Total Stages**: 12
-- **Stages to Execute**: Application Design, Units Generation, Functional Design, NFR Requirements, NFR Design, Infrastructure Design, Code Generation, Build and Test
-- **Stages to Skip**: None (Greenfield 프로젝트로 전체 단계 실행)
+- **Units**: 4 (core-auth, menu-management, order-sse, table-session)
+- **Stages to Execute**: Per-Unit (Functional Design, NFR Requirements, NFR Design, Infrastructure Design, Code Generation) × 4 Units + Build and Test
+- **Stages to Skip**: None
 
 ## Stage Progress
 
@@ -32,22 +33,28 @@
 - [x] Requirements Analysis
 - [x] User Stories
 - [x] Workflow Planning
-- [ ] Application Design - EXECUTE
-- [ ] Units Generation - EXECUTE
+- [x] Application Design - COMPLETED
+- [x] Units Generation - COMPLETED
 
 ### 🟢 CONSTRUCTION PHASE
-- [ ] Functional Design - EXECUTE
+- [ ] Functional Design (Unit 1: core-auth) - EXECUTE
+- [ ] Functional Design (Unit 2: menu-management) - EXECUTE
+- [ ] Functional Design (Unit 3: order-sse) - EXECUTE
+- [ ] Functional Design (Unit 4: table-session) - EXECUTE
 - [ ] NFR Requirements - EXECUTE
 - [ ] NFR Design - EXECUTE
 - [ ] Infrastructure Design - EXECUTE
-- [ ] Code Generation - EXECUTE
+- [ ] Code Generation (Unit 1: core-auth) - EXECUTE
+- [ ] Code Generation (Unit 2: menu-management) - EXECUTE
+- [ ] Code Generation (Unit 3: order-sse) - EXECUTE
+- [ ] Code Generation (Unit 4: table-session) - EXECUTE
 - [ ] Build and Test - EXECUTE
 
 ### 🟡 OPERATIONS PHASE
 - [ ] Operations - PLACEHOLDER
 
 ## Current Status
-- **Lifecycle Phase**: INCEPTION
-- **Current Stage**: Workflow Planning (승인 대기)
-- **Next Stage**: Application Design
-- **Status**: 실행 계획 승인 대기
+- **Lifecycle Phase**: CONSTRUCTION
+- **Current Stage**: CONSTRUCTION - Functional Design
+- **Next Stage**: NFR Requirements
+- **Status**: Units를 4개로 재분해 완료 (4인 팀 구성), Functional Design 질문 답변 대기 중
