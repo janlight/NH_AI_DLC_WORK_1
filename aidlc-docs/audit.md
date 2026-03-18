@@ -196,3 +196,39 @@ AI-DLC 워크플로우를 시작해봅시다."
 **Context**: Functional Design Step 3 - Unit별 질문 파일 생성
 
 ---
+
+## CONSTRUCTION - Functional Design (Session Resumed - Unit 1: core-auth)
+**Timestamp**: 2026-03-18T15:10:00+09:00
+**User Input**: "이 프로젝트는 4명이서 진행해.나는 unit1인 core-auth 를 담당하고 있어. branch를 unit1로해서 관리하고 진행해줘."
+**AI Response**: Git 저장소 초기화 및 unit1 브랜치 생성 완료. Functional Design (Unit 1: core-auth) 단계 재개. core-auth-functional-design-plan.md의 Q1~Q3 답변 대기 중.
+**Context**: CONSTRUCTION - Functional Design Step 4 (답변 수집 대기)
+
+---
+
+## CONSTRUCTION - Functional Design (Answers Collected - Unit 1: core-auth)
+**Timestamp**: 2026-03-18T15:25:00+09:00
+**User Input**: "완료했어."
+**AI Response**: 답변 확인: Q1=A(5회 실패 시 15분 차단), Q2=A(role 필드 구분), Q3=A(시드 데이터 관리자 생성). 모호함 없음. Part 2 산출물 생성 진행.
+**Context**: Functional Design Step 4-5 완료, Part 2 생성 시작
+
+---
+
+## CONSTRUCTION - Functional Design (Artifacts Generated - Unit 1: core-auth)
+**Timestamp**: 2026-03-18T15:35:00+09:00
+**AI Response**: Functional Design 산출물 4개 생성 완료:
+- domain-entities.md: 전체 Prisma 스키마 (11개 엔티티, 2개 Enum)
+- business-rules.md: 인증 비즈니스 규칙 8개 (BR-AUTH-01~08)
+- business-logic-model.md: AuthService 오케스트레이션, 미들웨어, 앱 구조
+- frontend-components.md: LoginView(고객/관리자), authStore, API Client, Router
+승인 요청 진행.
+**Context**: Functional Design Step 6-9 완료, Step 10 승인 대기
+
+---
+
+## CONSTRUCTION - Functional Design (Approved - Unit 1: core-auth)
+**Timestamp**: 2026-03-18T15:40:00+09:00
+**User Input**: "계속해줘,."
+**AI Response**: Functional Design 승인 완료. aidlc-state.md 업데이트. NFR Requirements 단계로 전환.
+**Context**: Functional Design 완료, NFR Requirements 시작
+
+---

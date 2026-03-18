@@ -37,7 +37,7 @@
 - [x] Units Generation - COMPLETED
 
 ### 🟢 CONSTRUCTION PHASE
-- [ ] Functional Design (Unit 1: core-auth) - EXECUTE
+- [x] Functional Design (Unit 1: core-auth) - COMPLETED
 - [ ] Functional Design (Unit 2: menu-management) - EXECUTE
 - [ ] Functional Design (Unit 3: order-sse) - EXECUTE
 - [ ] Functional Design (Unit 4: table-session) - EXECUTE
