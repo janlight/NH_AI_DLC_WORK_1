@@ -1,0 +1,46 @@
+# Table Order Service - Docker Compose
+# Unit 1: 기본 구조, Unit 2: menu-uploads 볼륨 추가
+
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: table_order
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/table_order
+      - JWT_SECRET=dev-secret-change-in-production
+      - UPLOAD_DIR=/app/uploads
+      - MAX_FILE_SIZE=5242880
+      - ALLOWED_MIME_TYPES=image/jpeg,image/png
+    volumes:
+      - menu-uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres-data:
+    driver: local
+  menu-uploads:
+    driver: local
