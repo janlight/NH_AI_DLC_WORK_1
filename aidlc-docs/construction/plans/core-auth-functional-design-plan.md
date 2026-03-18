@@ -6,6 +6,7 @@
 - [x] Step 1: Unit 컨텍스트 분석
 - [x] Step 2: 설계 계획 수립
 - [x] Step 3: 질문 생성
+<<<<<<< HEAD
 - [ ] Step 4: 사용자 답변 수집
 - [ ] Step 5: 답변 분석
 
@@ -15,6 +16,17 @@
 - [ ] Step 8: business-logic-model.md 생성
 - [ ] Step 9: frontend-components.md 생성
 - [ ] Step 10: 검증 및 승인 요청
+=======
+- [x] Step 4: 사용자 답변 수집
+- [x] Step 5: 답변 분석 (Q1=A, Q2=A, Q3=A - 모호함 없음)
+
+### Part 2: 생성
+- [x] Step 6: domain-entities.md 생성
+- [x] Step 7: business-rules.md 생성
+- [x] Step 8: business-logic-model.md 생성
+- [x] Step 9: frontend-components.md 생성
+- [x] Step 10: 검증 및 승인 요청 - 승인 완료
+>>>>>>> origin/unit1
 
 ---
 
@@ -44,7 +56,11 @@
 - C) 3회 실패 시 5분 차단
 - D) Other (please describe after [Answer]: tag below)
 
+<<<<<<< HEAD
 [Answer]: 
+=======
+[Answer]: A
+>>>>>>> origin/unit1
 
 ### Q2: JWT 토큰 구조
 고객용과 관리자용 JWT 토큰을 어떻게 구분할까요?
@@ -53,7 +69,11 @@
 - B) 별도 시크릿 키로 서명 (고객용 키, 관리자용 키)
 - C) Other (please describe after [Answer]: tag below)
 
+<<<<<<< HEAD
 [Answer]: 
+=======
+[Answer]: A
+>>>>>>> origin/unit1
 
 ### Q3: 관리자 계정 초기 생성
 최초 매장 등록 시 관리자 계정은 어떻게 생성할까요?
@@ -62,5 +82,9 @@
 - B) 회원가입 API 제공
 - C) Other (please describe after [Answer]: tag below)
 
+<<<<<<< HEAD
 [Answer]: 
+=======
+[Answer]: A
+>>>>>>> origin/unit1
 

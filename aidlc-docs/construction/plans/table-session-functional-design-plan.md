@@ -6,6 +6,7 @@
 - [x] Step 1: Unit 컨텍스트 분석
 - [x] Step 2: 설계 계획 수립
 - [x] Step 3: 질문 생성
+<<<<<<< HEAD
 - [x] Step 4: 사용자 답변 수집
 - [x] Step 5: 답변 분석 (모호함/모순 없음)
 
@@ -15,6 +16,17 @@
 - [x] Step 8: business-logic-model.md 생성
 - [x] Step 9: frontend-components.md 생성
 - [x] Step 10: 검증 및 승인 요청 - 승인 완료 (2026-03-18T15:08:24+09:00)
+=======
+- [ ] Step 4: 사용자 답변 수집
+- [ ] Step 5: 답변 분석
+
+### Part 2: 생성
+- [ ] Step 6: domain-entities.md 생성
+- [ ] Step 7: business-rules.md 생성
+- [ ] Step 8: business-logic-model.md 생성
+- [ ] Step 9: frontend-components.md 생성
+- [ ] Step 10: 검증 및 승인 요청
+>>>>>>> origin/unit1
 
 ---
 
@@ -42,7 +54,11 @@
 - B) 관리자가 수동으로 세션 시작
 - C) Other (please describe after [Answer]: tag below)
 
+<<<<<<< HEAD
 [Answer]: A
+=======
+[Answer]: 
+>>>>>>> origin/unit1
 
 ### Q2: 과거 주문 내역 보존 기간
 이용 완료 후 과거 주문 내역을 얼마나 보존할까요?
@@ -52,7 +68,11 @@
 - C) 365일 보존 후 자동 삭제
 - D) Other (please describe after [Answer]: tag below)
 
+<<<<<<< HEAD
 [Answer]: B
+=======
+[Answer]: 
+>>>>>>> origin/unit1
 
 ### Q3: 이용 완료 시 고객 태블릿 동작
 테이블 이용 완료 처리 시 고객 태블릿 화면은 어떻게 될까요?
@@ -61,5 +81,9 @@
 - B) 현재 화면 유지, 다음 주문 시도 시 세션 만료 안내
 - C) Other (please describe after [Answer]: tag below)
 
+<<<<<<< HEAD
 [Answer]: A
+=======
+[Answer]: 
+>>>>>>> origin/unit1
 
