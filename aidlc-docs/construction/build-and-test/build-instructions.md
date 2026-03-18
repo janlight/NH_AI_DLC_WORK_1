@@ -1,122 +1,79 @@
-# Build Instructions - Unit 3: order-sse
+# Build Instructions - Unit 4: table-session
 
 ## Prerequisites
-- **Node.js**: v18+ (LTS)
+- **Node.js**: v18+
 - **npm**: v9+
-- **Docker & Docker Compose**: (Unit 1에서 구성, PostgreSQL 실행용)
-- **Git**: 소스 코드 관리
+- **Docker & Docker Compose**: 최신 버전
+- **PostgreSQL**: Docker Compose로 제공
 
 ## 환경 변수
 
 ```bash
-# backend/.env (Unit 1에서 생성, 아래는 Unit 3에서 필요한 항목)
-DATABASE_URL=postgresql://user:password@localhost:5432/tableorder
-JWT_SECRET=your-jwt-secret
-NODE_ENV=development
-PORT=3000
+# .env (table-order/ 루트)
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/tableorder
+JWT_SECRET=your-secret-key
+CLEANUP_CRON_SCHEDULE=0 3 * * *
+CLEANUP_BATCH_SIZE=1000
+ORDER_HISTORY_RETENTION_DAYS=90
 ```
 
 ## Build Steps
 
-### 1. 의존성 설치
-
+### 1. 프로젝트 루트 이동
 ```bash
-# 백엔드
-cd backend
-npm install
-
-# 프론트엔드
-cd frontend
-npm install
+cd table-order
 ```
 
-Unit 3에서 추가로 필요한 패키지:
-
+### 2. Backend 의존성 설치
 ```bash
-# 백엔드 (Unit 1에서 이미 설치되어 있을 수 있음)
 cd backend
-npm install express uuid
-npm install -D jest supertest
-
-# 프론트엔드 (Unit 1에서 이미 설치되어 있을 수 있음)
-cd frontend
-npm install vue pinia axios vue-router
-npm install -D jest @vue/test-utils
+npm install
+npm install express @prisma/client bcrypt jsonwebtoken node-cron
+npm install -D jest supertest prisma
 ```
 
-### 2. 데이터베이스 설정
-
+### 3. Frontend 의존성 설치
 ```bash
-# Docker Compose로 PostgreSQL 시작 (Unit 1에서 구성)
+cd ../frontend
+npm install
+npm install vue@3 vue-router@4 pinia axios
+npm install -D vitest @vue/test-utils jsdom
+```
+
+### 4. Docker Compose로 DB 기동
+```bash
+cd ..
 docker-compose up -d postgres
+```
 
-# Prisma 마이그레이션 실행 (Unit 1에서 스키마 관리)
+### 5. Prisma 마이그레이션 (Unit 1 스키마 필요)
+```bash
 cd backend
-npx prisma migrate deploy
-npx prisma generate
-
-# 시드 데이터 (Unit 1에서 관리)
+npx prisma migrate dev
 npx prisma db seed
 ```
 
-### 3. 백엔드 빌드 확인
-
+### 6. Backend 서버 시작
 ```bash
-cd backend
-# 문법 검증 (lint가 설정된 경우)
-npm run lint
-
-# 서버 시작 테스트
-node -e "require('./src/services/orderQueueService'); console.log('orderQueueService OK')"
-node -e "require('./src/services/sseService'); console.log('sseService OK')"
-node -e "require('./src/services/orderService'); console.log('orderService OK')"
-node -e "require('./src/routes/orderRoutes'); console.log('orderRoutes OK')"
-node -e "require('./src/routes/sseRoutes'); console.log('sseRoutes OK')"
+npm start
+# 또는 개발 모드: npm run dev
 ```
 
-### 4. 프론트엔드 빌드
-
+### 7. Frontend 개발 서버 시작
 ```bash
-cd frontend
-npm run build
+cd ../frontend
+npm run dev
 ```
 
-- 빌드 결과물: `frontend/dist/`
-- 빌드 성공 시 에러 없이 완료
-
-## Unit 1 통합 시 추가 작업
-
-1. `backend/src/app.js`에 라우터 등록:
-```javascript
-const { router: orderRouter, setPrisma } = require('./routes/orderRoutes');
-const { router: sseRouter } = require('./routes/sseRoutes');
-
-// Prisma 주입
-setPrisma(prisma);
-
-// 라우터 등록 (authMiddleware 적용)
-app.use('/api/stores/:storeId', authMiddleware('customer'), orderRouter);
-app.use('/api/stores/:storeId', authMiddleware('admin'), sseRouter);
-```
-
-2. `frontend/src/router/index.js`에 라우트 추가:
-```javascript
-{ path: '/customer/cart', component: () => import('./views/customer/CartView.vue') },
-{ path: '/customer/orders', component: () => import('./views/customer/OrderView.vue') },
-{ path: '/admin/dashboard', component: () => import('./views/admin/DashboardView.vue') }
-```
+## 빌드 확인
+- Backend: `http://localhost:3000/api/stores/{storeId}/tables` 응답 확인
+- Frontend: `http://localhost:5173` 접속 확인
 
 ## Troubleshooting
 
-### uuid 모듈 없음
-```bash
-npm install uuid
-```
-
-### Prisma Client 생성 안됨
-```bash
-npx prisma generate
-```
+### Prisma 마이그레이션 실패
+- PostgreSQL 컨테이너가 실행 중인지 확인: `docker ps`
+- DATABASE_URL 환경 변수 확인
 
 ### 포트 충돌
-`.env`에서 `PORT` 값을 변경하거나 기존 프로세스 종료
+- 3000 또는 5173 포트 사용 중인 프로세스 종료: `lsof -i :3000`

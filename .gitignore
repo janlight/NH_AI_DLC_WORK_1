@@ -1,3 +1,2 @@
-# AIDLC session-specific files (per-user, per-unit)
-aidlc-docs/aidlc-state.md
-aidlc-docs/audit.md
+/aidlc-docs/aidlc-state.md
+/aidlc-docs/audit.md
