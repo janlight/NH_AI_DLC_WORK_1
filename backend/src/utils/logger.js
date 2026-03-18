@@ -27,6 +27,7 @@ const logger = winston.createLogger({
     winston.format.timestamp({ format: 'YYYY-MM-DDTHH:mm:ss.SSSZ' }),
     winston.format.json()
   ),
+  defaultMeta: { service: 'table-order' },
   transports: [
     // 전체 로그 파일 (일별 rotation, 90일 보존)
     new winston.transports.DailyRotateFile({

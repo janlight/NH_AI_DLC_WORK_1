@@ -86,6 +86,7 @@ model TableSession {
   @@index([tableId, isActive])
 }
 
+
 model Category {
   id        String   @id @default(uuid())
   storeId   String

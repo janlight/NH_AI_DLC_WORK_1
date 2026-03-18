@@ -23,7 +23,6 @@ apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === 401) {
-      // 자동 재로그인 시도는 authStore에서 처리
       const event = new CustomEvent('auth:unauthorized');
       window.dispatchEvent(event);
     }

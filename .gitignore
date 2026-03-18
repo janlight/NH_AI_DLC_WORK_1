@@ -1,10 +1,14 @@
 node_modules/
 .env
+.env.local
 backend/.env
 frontend/.env
 backend/logs/
+backend/uploads/
 dist/
+build/
 .DS_Store
+Thumbs.db
 *.log
 aidlc-docs/aidlc-state.md
 aidlc-docs/audit.md

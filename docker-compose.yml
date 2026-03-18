@@ -29,11 +29,15 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       NODE_ENV: production
       CORS_ORIGIN: http://localhost
+      UPLOAD_DIR: /app/uploads
+      MAX_FILE_SIZE: 5242880
+      ALLOWED_MIME_TYPES: image/jpeg,image/png
     depends_on:
       postgres:
         condition: service_healthy
     volumes:
       - backend_logs:/app/logs
+      - menu_uploads:/app/uploads
     restart: unless-stopped
 
   frontend:
@@ -48,3 +52,4 @@ services:
 volumes:
   postgres_data:
   backend_logs:
+  menu_uploads:
