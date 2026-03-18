@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: tableorder-db
+    environment:
+      POSTGRES_DB: tableorder
+      POSTGRES_USER: tableorder_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tableorder_user -d tableorder"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    container_name: tableorder-backend
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://tableorder_user:${DB_PASSWORD}@postgres:5432/tableorder?connection_limit=20
+      JWT_SECRET: ${JWT_SECRET}
+      NODE_ENV: production
+      CORS_ORIGIN: http://localhost
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - backend_logs:/app/logs
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: tableorder-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  backend_logs:
