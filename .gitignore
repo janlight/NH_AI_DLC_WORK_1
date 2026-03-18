@@ -1,0 +1,10 @@
+node_modules/
+.env
+backend/.env
+frontend/.env
+backend/logs/
+dist/
+.DS_Store
+*.log
+aidlc-docs/aidlc-state.md
+aidlc-docs/audit.md
