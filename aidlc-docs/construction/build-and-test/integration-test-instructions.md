@@ -1,64 +1,31 @@
-# Integration Test Instructions - Unit 3: order-sse
+# Integration Test Instructions - All Units
 
 ## 목적
-Unit 3의 API 엔드포인트가 서비스 레이어와 올바르게 연동되는지 검증합니다.
+Unit 간 상호작용 및 API 엔드포인트 통합을 검증합니다.
 
-## 테스트 환경
+## 사전 조건
+- Docker Compose로 전체 서비스 기동
+- Prisma 마이그레이션 및 시드 데이터 완료
 
-### 사전 조건
-- PostgreSQL 실행 중 (Docker Compose)
-- Prisma 마이그레이션 완료
-- 시드 데이터 적용
-
-### 환경 설정
+## 환경 설정
 
 ```bash
-# 테스트용 DB (Unit 1에서 구성)
-export DATABASE_URL=postgresql://user:password@localhost:5432/tableorder_test
-export JWT_SECRET=test-secret
-export NODE_ENV=test
+docker-compose up -d
+cd backend && npx prisma migrate deploy && npx prisma db seed
 ```
 
-## 실행
+---
+
+## Unit 3: order-sse 통합 테스트
 
 ```bash
 cd backend
 npm run test:integration
-
-# 또는 개별 실행
+# 또는
 npx jest tests/integration/orderApi.test.js
 ```
 
-## 테스트 시나리오
-
-### Scenario 1: 주문 생성 플로우
-1. 고객 JWT로 `POST /api/stores/:storeId/tables/:tableId/orders` 호출
-2. 유효한 메뉴 항목으로 주문 생성
-3. 201 응답 + 주문번호 반환 확인
-4. SSE 브로드캐스트 호출 확인
-
-### Scenario 2: 주문 상태 변경 플로우
-1. 관리자 JWT로 `PUT /api/stores/:storeId/orders/:orderId/status` 호출
-2. PENDING → PREPARING 전이 확인 (200)
-3. PENDING → COMPLETED 전이 거부 확인 (400)
-4. SSE 브로드캐스트 호출 확인
-
-### Scenario 3: 주문 삭제 플로우
-1. 관리자 JWT로 `DELETE /api/stores/:storeId/orders/:orderId` 호출
-2. 주문 + OrderItem 삭제 확인
-3. 테이블 총액 재계산 확인
-4. SSE 브로드캐스트 호출 확인
-
-### Scenario 4: 테넌트 격리
-1. store-1 토큰으로 store-2 API 호출
-2. 403 STORE_MISMATCH 에러 확인
-
-### Scenario 5: 입력 검증
-1. 빈 장바구니로 주문 생성 시도 → 400
-2. 유효하지 않은 수량으로 주문 생성 시도 → 400
-3. 유효하지 않은 상태값으로 상태 변경 시도 → 400
-
-## 예상 결과
+### 시나리오
 
 | 시나리오 | 테스트 수 | 설명 |
 |---|---|---|
@@ -68,11 +35,34 @@ npx jest tests/integration/orderApi.test.js
 | 조회 | 2 | 매장 전체, 테이블별 |
 | **합계** | **~10** | |
 
-## Unit 간 통합 테스트 (Unit 1 완료 후)
+---
 
-Unit 1 통합 후 추가 테스트:
+## Unit 4: table-session 통합 테스트
 
-1. **인증 통합**: 실제 JWT 토큰으로 API 호출
-2. **Prisma 통합**: 실제 DB에 주문 생성/조회/삭제
-3. **SSE 통합**: 실제 EventSource 연결 + 이벤트 수신
-4. **Unit 4 통합**: 이용 완료 시 주문 → OrderHistory 이동
+### Scenario 1: 테이블 생성 → 인증 연동 (Unit 4 ↔ Unit 1)
+1. 관리자 로그인으로 JWT 토큰 획득
+2. `POST /api/stores/:storeId/tables` 호출 (JWT 헤더 포함)
+3. 테이블 생성 확인
+4. JWT 없이 호출 시 401 응답 확인
+
+### Scenario 2: 이용 완료 → 주문 이력 이동 (Unit 4 ↔ Unit 3)
+1. 테이블 로그인 → 주문 생성 (Unit 3)
+2. 이용 완료 호출 (Unit 4)
+3. 현재 주문 목록 비어있음 확인
+4. 과거 내역에 주문 존재 확인
+
+### Scenario 3: 이용 완료 → SSE 이벤트 (Unit 4 ↔ Unit 3)
+1. 관리자 SSE 연결 (Unit 3)
+2. 이용 완료 호출 (Unit 4)
+3. `table-completed` SSE 이벤트 수신 확인
+
+### Scenario 4: 테넌트 격리 (Unit 4 ↔ Unit 1)
+1. 매장 A 관리자 토큰으로 매장 B 테이블 접근 시도
+2. 403 Forbidden 응답 확인
+
+---
+
+## 정리
+```bash
+docker-compose down
+```
