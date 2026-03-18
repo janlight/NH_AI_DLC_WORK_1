@@ -26,11 +26,11 @@ async function createTable(storeId, { tableNumber, password }) {
     throw error;
   }
 
-  const bcrypt = require('bcrypt');
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const bcrypt = require('bcryptjs');
+  const hashedPassword = await bcrypt.hash(password, 12);
 
   return prisma.table.create({
-    data: { storeId, tableNumber, password: hashedPassword },
+    data: { storeId, tableNumber, passwordHash: hashedPassword },
   });
 }
 
@@ -59,7 +59,8 @@ async function completeTable(storeId, tableId) {
   }
 
   const now = new Date();
-  const expiresAt = new Date(now.getTime() + Number(process.env.ORDER_HISTORY_RETENTION_DAYS || 90) * 24 * 60 * 60 * 1000);
+  const retentionDays = Number(process.env.ORDER_HISTORY_RETENTION_DAYS || 90);
+  const expiresAt = new Date(now.getTime() + retentionDays * 24 * 60 * 60 * 1000);
 
   await prisma.$transaction(async (tx) => {
     const orders = await tx.order.findMany({
@@ -73,14 +74,16 @@ async function completeTable(storeId, tableId) {
           storeId,
           tableId,
           sessionId: session.id,
+          tableNumber: table.tableNumber,
           orderNumber: order.orderNumber,
+          status: order.status,
+          orderStatus: order.status,
           items: order.items.map((i) => ({
             menuName: i.menuName,
             quantity: i.quantity,
-            price: i.price,
+            price: i.unitPrice,
           })),
           totalAmount: order.totalAmount,
-          orderStatus: order.status,
           orderedAt: order.createdAt,
           completedAt: now,
           expiresAt,
@@ -93,7 +96,7 @@ async function completeTable(storeId, tableId) {
     }
 
     await tx.tableSession.update({
-      where: { id: session.id, version: session.version },
+      where: { id: session.id },
       data: { isActive: false, completedAt: now, version: { increment: 1 } },
     });
 
@@ -134,11 +137,7 @@ async function getOrderHistory(storeId, tableId, dateFilter = {}) {
     throw error;
   }
 
-  const where = {
-    storeId,
-    tableId,
-    expiresAt: { gt: new Date() },
-  };
+  const where = { storeId, tableId };
 
   if (dateFilter.startDate) {
     where.orderedAt = { ...where.orderedAt, gte: new Date(dateFilter.startDate) };

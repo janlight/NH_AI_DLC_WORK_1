@@ -70,22 +70,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, computed, onMounted } from 'vue';
+import { useAuthStore } from '../../stores/authStore';
 import apiClient from '../../api/client';
 import TableSetupModal from '../../components/admin/TableSetupModal.vue';
 import TableCompleteConfirm from '../../components/admin/TableCompleteConfirm.vue';
 import OrderHistoryModal from '../../components/admin/OrderHistoryModal.vue';
 
-const route = useRoute();
-const storeId = route.params.storeId;
+const authStore = useAuthStore();
+const storeId = computed(() => authStore.storeId);
 const tables = ref([]);
 const showSetup = ref(false);
 const completeTarget = ref(null);
 const historyTarget = ref(null);
 
 async function loadTables() {
-  const { data } = await apiClient.get(`/api/stores/${storeId}/tables`);
+  const { data } = await apiClient.get(`/api/stores/${storeId.value}/tables`);
   tables.value = data;
 }
 

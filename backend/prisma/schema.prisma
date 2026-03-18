@@ -56,13 +56,14 @@ model Admin {
 }
 
 model Table {
-  id           String   @id @default(uuid())
-  storeId      String
-  tableNumber  Int
-  passwordHash String
-  isActive     Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id               String   @id @default(uuid())
+  storeId          String
+  tableNumber      Int
+  passwordHash     String
+  currentSessionId String?
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   store    Store          @relation(fields: [storeId], references: [id])
   sessions TableSession[]
@@ -72,13 +73,15 @@ model Table {
 }
 
 model TableSession {
-  id        String    @id @default(uuid())
-  tableId   String
-  storeId   String
-  startedAt DateTime  @default(now())
-  endedAt   DateTime?
-  isActive  Boolean   @default(true)
-  createdAt DateTime  @default(now())
+  id          String    @id @default(uuid())
+  tableId     String
+  storeId     String
+  startedAt   DateTime  @default(now())
+  endedAt     DateTime?
+  completedAt DateTime?
+  isActive    Boolean   @default(true)
+  version     Int       @default(0)
+  createdAt   DateTime  @default(now())
 
   table  Table   @relation(fields: [tableId], references: [id])
   store  Store   @relation(fields: [storeId], references: [id])
@@ -165,12 +168,15 @@ model OrderHistory {
   tableNumber Int
   orderNumber Int
   status      String
+  orderStatus String?
   totalAmount Int
   items       Json
   orderedAt   DateTime
   completedAt DateTime @default(now())
+  expiresAt   DateTime?
 
   @@index([storeId, tableId, completedAt])
+  @@index([expiresAt])
 }
 
 model LoginAttempt {

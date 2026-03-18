@@ -6,10 +6,15 @@ const cors = require('cors');
 const morgan = require('morgan');
 const requestId = require('./middleware/requestId');
 const errorHandler = require('./middleware/errorHandler');
+const { authMiddleware, roleMiddleware } = require('./middleware/auth');
 const logger = require('./utils/logger');
 
 // Routes
 const authRoutes = require('./routes/auth');
+const menuRoutes = require('./routes/menu');
+const tableRoutes = require('./routes/table');
+const orderRoutes = require('./routes/orderRoutes');
+const sseRoutes = require('./routes/sseRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -47,7 +52,18 @@ app.use(morgan('combined', {
 }));
 
 // === Routes ===
+// Unit 1: Auth (public)
 app.use('/api/auth', authRoutes);
+
+// Unit 2: Menu (public read, admin write)
+app.use('/api/stores/:storeId/menus', menuRoutes);
+
+// Unit 3: Orders + SSE (authenticated)
+app.use('/api/stores/:storeId/orders', authMiddleware, orderRoutes);
+app.use('/api/stores/:storeId/sse', sseRoutes);
+
+// Unit 4: Table management (admin only)
+app.use('/api/stores/:storeId/tables', authMiddleware, roleMiddleware(['OWNER', 'MANAGER']), tableRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

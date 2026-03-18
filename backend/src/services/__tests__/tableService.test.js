@@ -14,7 +14,7 @@ jest.mock('@prisma/client', () => {
   return { PrismaClient: jest.fn(() => mockPrisma) };
 });
 
-jest.mock('bcrypt', () => ({ hash: jest.fn().mockResolvedValue('hashed_pw') }));
+jest.mock('bcryptjs', () => ({ hash: jest.fn().mockResolvedValue('hashed_pw') }));
 
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();

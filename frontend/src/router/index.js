@@ -26,8 +26,32 @@ const routes = [
     component: () => import('../views/admin/MenuManageView.vue'),
     meta: { requiresAuth: true, role: 'admin' },
   },
-  // Unit 3: order-sse (추후 추가)
-  // Unit 4: table-session (추후 추가)
+  // Unit 3: order-sse
+  {
+    path: '/cart',
+    name: 'Cart',
+    component: () => import('../views/customer/CartView.vue'),
+    meta: { requiresAuth: true, role: 'customer' },
+  },
+  {
+    path: '/orders',
+    name: 'Orders',
+    component: () => import('../views/customer/OrderView.vue'),
+    meta: { requiresAuth: true, role: 'customer' },
+  },
+  {
+    path: '/admin/dashboard',
+    name: 'Dashboard',
+    component: () => import('../views/admin/DashboardView.vue'),
+    meta: { requiresAuth: true, role: 'admin' },
+  },
+  // Unit 4: table-session
+  {
+    path: '/admin/tables',
+    name: 'TableManage',
+    component: () => import('../views/admin/TableManageView.vue'),
+    meta: { requiresAuth: true, role: 'admin' },
+  },
   {
     path: '/',
     redirect: '/login',
