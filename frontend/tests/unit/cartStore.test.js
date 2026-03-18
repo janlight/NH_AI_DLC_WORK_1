@@ -1,14 +1,15 @@
 import { setActivePinia, createPinia } from 'pinia';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useCartStore } from '../../src/stores/cartStore';
 
 // localStorage 모킹
 const localStorageMock = (() => {
   let store = {};
   return {
-    getItem: jest.fn((key) => store[key] || null),
-    setItem: jest.fn((key, value) => { store[key] = value; }),
-    removeItem: jest.fn((key) => { delete store[key]; }),
-    clear: jest.fn(() => { store = {}; })
+    getItem: vi.fn((key) => store[key] || null),
+    setItem: vi.fn((key, value) => { store[key] = value; }),
+    removeItem: vi.fn((key) => { delete store[key]; }),
+    clear: vi.fn(() => { store = {}; })
   };
 })();
 Object.defineProperty(global, 'localStorage', { value: localStorageMock });

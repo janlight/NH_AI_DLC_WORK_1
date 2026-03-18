@@ -8,8 +8,19 @@ const requestId = require('./middleware/requestId');
 const errorHandler = require('./middleware/errorHandler');
 const logger = require('./utils/logger');
 
+const { PrismaClient } = require('@prisma/client');
+const { authMiddleware } = require('./middleware/auth');
+
 // Routes
 const authRoutes = require('./routes/auth');
+const menuRoutes = require('./routes/menu');
+const { router: orderRoutes, setPrisma } = require('./routes/orderRoutes');
+const { router: sseRoutes } = require('./routes/sseRoutes');
+const tableRoutes = require('./routes/table');
+
+// Prisma
+const prisma = new PrismaClient();
+setPrisma(prisma);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -48,6 +59,10 @@ app.use(morgan('combined', {
 
 // === Routes ===
 app.use('/api/auth', authRoutes);
+app.use('/api/stores/:storeId', authMiddleware, menuRoutes);
+app.use('/api/stores/:storeId', authMiddleware, orderRoutes);
+app.use('/api/stores/:storeId', authMiddleware, sseRoutes);
+app.use('/api/stores/:storeId/tables', authMiddleware, tableRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

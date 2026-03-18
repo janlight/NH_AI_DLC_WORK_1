@@ -10,5 +10,5 @@ build/
 .DS_Store
 Thumbs.db
 *.log
-aidlc-docs/aidlc-state.md
-aidlc-docs/audit.md
+backend/coverage/
+frontend/coverage/

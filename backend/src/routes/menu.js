@@ -189,6 +189,18 @@ router.post(
 );
 
 // PUT /api/stores/:storeId/menus/:menuId - 메뉴 수정 (관리자)
+// PUT /api/stores/:storeId/menus/order - 메뉴 순서 변경 (관리자)
+router.put(
+  '/menus/order',
+  noCache,
+  validators.validateMenuOrder,
+  asyncHandler(async (req, res) => {
+    await menuService.updateMenuOrder(req.params.storeId, req.body.menuOrders);
+    res.json({ message: '메뉴 순서가 변경되었습니다.' });
+  })
+);
+
+// PUT /api/stores/:storeId/menus/:menuId - 메뉴 수정 (관리자)
 router.put(
   '/menus/:menuId',
   noCache,
@@ -208,17 +220,6 @@ router.delete(
   asyncHandler(async (req, res) => {
     await menuService.deleteMenu(req.params.storeId, req.params.menuId);
     res.status(204).end();
-  })
-);
-
-// PUT /api/stores/:storeId/menus/order - 메뉴 순서 변경 (관리자)
-router.put(
-  '/menus/order',
-  noCache,
-  validators.validateMenuOrder,
-  asyncHandler(async (req, res) => {
-    await menuService.updateMenuOrder(req.params.storeId, req.body.menuOrders);
-    res.json({ message: '메뉴 순서가 변경되었습니다.' });
   })
 );
 

@@ -1,22 +1,23 @@
 import { setActivePinia, createPinia } from 'pinia';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useOrderStore } from '../../src/stores/orderStore';
 
 // API 모킹
-jest.mock('../../src/api/orderApi', () => ({
-  createOrder: jest.fn(),
-  getTableOrders: jest.fn(),
-  getStoreOrders: jest.fn(),
-  updateOrderStatus: jest.fn(),
-  deleteOrder: jest.fn(),
-  getOrderHistory: jest.fn()
+vi.mock('../../src/api/orderApi', () => ({
+  createOrder: vi.fn(),
+  getTableOrders: vi.fn(),
+  getStoreOrders: vi.fn(),
+  updateOrderStatus: vi.fn(),
+  deleteOrder: vi.fn(),
+  getOrderHistory: vi.fn()
 }));
 
 // cartStore 모킹
-jest.mock('../../src/stores/cartStore', () => ({
-  useCartStore: () => ({ clearCart: jest.fn() })
+vi.mock('../../src/stores/cartStore', () => ({
+  useCartStore: () => ({ clearCart: vi.fn() })
 }));
 
-const api = require('../../src/api/orderApi');
+import * as api from '../../src/api/orderApi';
 
 describe('orderStore', () => {
   let store;
@@ -24,7 +25,7 @@ describe('orderStore', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     store = useOrderStore();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('createOrder', () => {

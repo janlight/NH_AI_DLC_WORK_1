@@ -66,6 +66,7 @@ model Table {
 
   store    Store          @relation(fields: [storeId], references: [id])
   sessions TableSession[]
+  orders   Order[]
 
   @@unique([storeId, tableNumber])
 }

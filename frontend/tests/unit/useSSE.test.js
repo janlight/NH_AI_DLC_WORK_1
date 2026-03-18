@@ -4,7 +4,7 @@
  * EventSource를 모킹하여 연결/재연결/이벤트 처리를 테스트합니다.
  */
 
-import { nextTick } from 'vue';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 // EventSource 모킹
 class MockEventSource {
@@ -36,22 +36,25 @@ MockEventSource.instances = [];
 global.EventSource = MockEventSource;
 
 // onUnmounted 모킹 (composable 외부에서 사용 시)
-jest.mock('vue', () => ({
-  ...jest.requireActual('vue'),
-  onUnmounted: jest.fn((fn) => { /* 테스트에서는 수동 호출 */ })
-}));
+vi.mock('vue', async () => {
+  const actual = await vi.importActual('vue');
+  return {
+    ...actual,
+    onUnmounted: vi.fn((fn) => { /* 테스트에서는 수동 호출 */ })
+  };
+});
 
-const { useSSE } = require('../../src/composables/useSSE');
+const { useSSE } = await import('../../src/composables/useSSE');
 
 describe('useSSE', () => {
   beforeEach(() => {
     MockEventSource.instances = [];
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     localStorage.setItem('token', 'test-token');
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it('connect 호출 시 EventSource를 생성한다', () => {
@@ -70,7 +73,7 @@ describe('useSSE', () => {
   });
 
   it('new-order 이벤트를 핸들러에 전달한다', () => {
-    const onNewOrder = jest.fn();
+    const onNewOrder = vi.fn();
     const { connect } = useSSE('store-1', { onNewOrder });
     connect();
     const es = MockEventSource.instances[0];
@@ -79,7 +82,7 @@ describe('useSSE', () => {
   });
 
   it('order-status 이벤트를 핸들러에 전달한다', () => {
-    const onOrderStatus = jest.fn();
+    const onOrderStatus = vi.fn();
     const { connect } = useSSE('store-1', { onOrderStatus });
     connect();
     const es = MockEventSource.instances[0];
@@ -97,7 +100,7 @@ describe('useSSE', () => {
     expect(retryCount.value).toBe(1);
 
     // 타이머 진행 → 재연결
-    jest.advanceTimersByTime(1000);
+    vi.advanceTimersByTime(1000);
     expect(MockEventSource.instances).toHaveLength(2);
   });
 
@@ -109,7 +112,7 @@ describe('useSSE', () => {
     for (let i = 0; i < 10; i++) {
       const es = MockEventSource.instances[MockEventSource.instances.length - 1];
       es._triggerError();
-      jest.advanceTimersByTime(30000);
+      vi.advanceTimersByTime(30000);
     }
 
     // 11번째 에러
@@ -128,7 +131,7 @@ describe('useSSE', () => {
     for (let i = 0; i < 11; i++) {
       const es = MockEventSource.instances[MockEventSource.instances.length - 1];
       es._triggerError();
-      jest.advanceTimersByTime(30000);
+      vi.advanceTimersByTime(30000);
     }
 
     expect(status.value).toBe('disconnected');
