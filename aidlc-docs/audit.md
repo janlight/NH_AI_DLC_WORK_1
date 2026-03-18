@@ -177,3 +177,22 @@ AI-DLC 워크플로우를 시작해봅시다."
 **Context**: Units Generation 수정 완료, 승인 대기
 
 ---
+
+## Units Generation (Revision Approved)
+**Timestamp**: 2026-03-18T14:54:44+09:00
+**User Input**: "유닛별로 수행할거라 .md파일을 유닛별로 만들어줘"
+**AI Response**: Unit 분할 승인으로 간주. Functional Design 질문 파일을 Unit별로 분리 생성 진행.
+**Context**: Units Generation 수정 승인, Functional Design 질문 Unit별 분리
+
+---
+
+## CONSTRUCTION - Functional Design (Unit별 질문 파일 분리)
+**Timestamp**: 2026-03-18T14:54:44+09:00
+**AI Response**: Functional Design 질문 파일을 Unit별 4개로 분리 생성 완료. 기존 통합 파일 삭제.
+- core-auth-functional-design-plan.md (3개 질문)
+- menu-management-functional-design-plan.md (4개 질문)
+- order-sse-functional-design-plan.md (4개 질문)
+- table-session-functional-design-plan.md (3개 질문)
+**Context**: Functional Design Step 3 - Unit별 질문 파일 생성
+
+---
