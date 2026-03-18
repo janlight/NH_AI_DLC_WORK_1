@@ -1,0 +1,180 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// === Enums ===
+
+enum AdminRole {
+  OWNER
+  MANAGER
+}
+
+enum OrderStatus {
+  PENDING
+  PREPARING
+  COMPLETED
+}
+
+// === Models ===
+
+model Store {
+  id        String   @id @default(uuid())
+  name      String   @db.VarChar(100)
+  slug      String   @unique @db.VarChar(50)
+  address   String?  @db.VarChar(200)
+  phone     String?  @db.VarChar(20)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  admins        Admin[]
+  tables        Table[]
+  categories    Category[]
+  menus         Menu[]
+  orders        Order[]
+  tableSessions TableSession[]
+}
+
+model Admin {
+  id           String    @id @default(uuid())
+  storeId      String
+  username     String    @db.VarChar(50)
+  passwordHash String
+  role         AdminRole @default(MANAGER)
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  store Store @relation(fields: [storeId], references: [id])
+
+  @@unique([storeId, username])
+}
+
+model Table {
+  id           String   @id @default(uuid())
+  storeId      String
+  tableNumber  Int
+  passwordHash String
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  store    Store          @relation(fields: [storeId], references: [id])
+  sessions TableSession[]
+
+  @@unique([storeId, tableNumber])
+}
+
+model TableSession {
+  id        String    @id @default(uuid())
+  tableId   String
+  storeId   String
+  startedAt DateTime  @default(now())
+  endedAt   DateTime?
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+
+  table  Table   @relation(fields: [tableId], references: [id])
+  store  Store   @relation(fields: [storeId], references: [id])
+  orders Order[]
+
+  @@index([tableId, isActive])
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  storeId   String
+  name      String   @db.VarChar(50)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  store Store  @relation(fields: [storeId], references: [id])
+  menus Menu[]
+
+  @@unique([storeId, name])
+}
+
+model Menu {
+  id          String   @id @default(uuid())
+  storeId     String
+  categoryId  String
+  name        String   @db.VarChar(100)
+  description String?  @db.VarChar(500)
+  price       Int
+  imageUrl    String?  @db.VarChar(500)
+  isAvailable Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  store      Store       @relation(fields: [storeId], references: [id])
+  category   Category    @relation(fields: [categoryId], references: [id])
+  orderItems OrderItem[]
+
+  @@index([storeId, categoryId, sortOrder])
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  storeId     String
+  tableId     String
+  sessionId   String
+  orderNumber Int
+  status      OrderStatus @default(PENDING)
+  totalAmount Int
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  store   Store        @relation(fields: [storeId], references: [id])
+  table   Table        @relation(fields: [tableId], references: [id])
+  session TableSession @relation(fields: [sessionId], references: [id])
+  items   OrderItem[]
+
+  @@unique([storeId, orderNumber])
+  @@index([sessionId])
+}
+
+model OrderItem {
+  id        String @id @default(uuid())
+  orderId   String
+  menuId    String
+  menuName  String @db.VarChar(100)
+  quantity  Int
+  unitPrice Int
+  subtotal  Int
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menu  Menu  @relation(fields: [menuId], references: [id])
+}
+
+model OrderHistory {
+  id          String   @id @default(uuid())
+  storeId     String
+  tableId     String
+  sessionId   String
+  tableNumber Int
+  orderNumber Int
+  status      String
+  totalAmount Int
+  items       Json
+  orderedAt   DateTime
+  completedAt DateTime @default(now())
+
+  @@index([storeId, tableId, completedAt])
+}
+
+model LoginAttempt {
+  id          String   @id @default(uuid())
+  identifier  String   @db.VarChar(200)
+  attemptedAt DateTime @default(now())
+  success     Boolean
+  ipAddress   String?  @db.VarChar(45)
+
+  @@index([identifier, attemptedAt])
+}
