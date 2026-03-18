@@ -66,6 +66,7 @@ model Table {
 
   store    Store          @relation(fields: [storeId], references: [id])
   sessions TableSession[]
+  orders   Order[]
 
   @@unique([storeId, tableNumber])
 }
@@ -98,6 +99,7 @@ model Category {
   menus Menu[]
 
   @@unique([storeId, name])
+  @@index([storeId, sortOrder])
 }
 
 model Menu {
@@ -109,6 +111,7 @@ model Menu {
   price       Int
   imageUrl    String?  @db.VarChar(500)
   isAvailable Boolean  @default(true)
+  isActive    Boolean  @default(true)
   sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -118,6 +121,7 @@ model Menu {
   orderItems OrderItem[]
 
   @@index([storeId, categoryId, sortOrder])
+  @@index([storeId, isActive, categoryId, sortOrder])
 }
 
 model Order {
