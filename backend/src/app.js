@@ -13,8 +13,13 @@ const logger = require('./utils/logger');
 const authRoutes = require('./routes/auth');
 const menuRoutes = require('./routes/menu');
 const tableRoutes = require('./routes/table');
-const orderRoutes = require('./routes/orderRoutes');
-const sseRoutes = require('./routes/sseRoutes');
+const { router: orderRoutes, setPrisma } = require('./routes/orderRoutes');
+const { router: sseRoutes } = require('./routes/sseRoutes');
+
+// Prisma Client (공유 인스턴스)
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+setPrisma(prisma);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -59,8 +64,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/stores/:storeId/menus', menuRoutes);
 
 // Unit 3: Orders + SSE (authenticated)
-app.use('/api/stores/:storeId/orders', authMiddleware, orderRoutes);
-app.use('/api/stores/:storeId/sse', sseRoutes);
+app.use('/api/stores/:storeId', authMiddleware, orderRoutes);
+app.use('/api/stores/:storeId', sseRoutes);
 
 // Unit 4: Table management (admin only)
 app.use('/api/stores/:storeId/tables', authMiddleware, roleMiddleware(['OWNER', 'MANAGER']), tableRoutes);

@@ -81,7 +81,7 @@ async function completeTable(storeId, tableId) {
           items: order.items.map((i) => ({
             menuName: i.menuName,
             quantity: i.quantity,
-            price: i.unitPrice,
+            price: i.price,
           })),
           totalAmount: order.totalAmount,
           orderedAt: order.createdAt,

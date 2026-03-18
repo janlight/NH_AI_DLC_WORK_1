@@ -51,6 +51,11 @@ class AuthService {
       session = await prisma.tableSession.create({
         data: { tableId: table.id, storeId: store.id, isActive: true },
       });
+      // Table의 currentSessionId 업데이트
+      await prisma.table.update({
+        where: { id: table.id },
+        data: { currentSessionId: session.id },
+      });
     }
 
     // JWT 발급

@@ -2,37 +2,9 @@
  * Order API 클라이언트
  * 
  * Unit 1의 api/client.js (axios 인스턴스)를 사용합니다.
- * Unit 1 미완료 시 독립 axios 인스턴스를 사용합니다.
  */
 
-import axios from 'axios';
-
-// Unit 1 통합 시 import apiClient from './client' 로 교체
-const apiClient = axios.create({
-  baseURL: '/api',
-  headers: { 'Content-Type': 'application/json' }
-});
-
-// 요청 인터셉터: JWT 토큰 자동 첨부
-apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-// 응답 인터셉터: 에러 파싱
-apiClient.interceptors.response.use(
-  (response) => response.data,
-  (error) => {
-    const errorData = error.response?.data?.error || {
-      code: 'NETWORK_ERROR',
-      message: '네트워크 오류가 발생했습니다'
-    };
-    return Promise.reject(errorData);
-  }
-);
+import apiClient from './client';
 
 /**
  * 주문 생성 (고객)

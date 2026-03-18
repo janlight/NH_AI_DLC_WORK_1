@@ -132,7 +132,7 @@ model Order {
   storeId     String
   tableId     String
   sessionId   String
-  orderNumber Int
+  orderNumber String   @db.VarChar(20)
   status      OrderStatus @default(PENDING)
   totalAmount Int
   createdAt   DateTime    @default(now())
@@ -153,7 +153,7 @@ model OrderItem {
   menuId    String
   menuName  String @db.VarChar(100)
   quantity  Int
-  unitPrice Int
+  price     Int
   subtotal  Int
 
   order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
@@ -166,7 +166,7 @@ model OrderHistory {
   tableId     String
   sessionId   String
   tableNumber Int
-  orderNumber Int
+  orderNumber String   @db.VarChar(20)
   status      String
   orderStatus String?
   totalAmount Int
